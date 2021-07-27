@@ -4,7 +4,7 @@
 
 typedef struct cliente {
     int senha;
-    char tipo; // P = prioritário; N = normal.
+    char tipo; // P = prioritï¿½rio; N = normal.
 } Cliente;
 
 typedef struct caixa {
@@ -12,10 +12,41 @@ typedef struct caixa {
     char status; // L = livre; O = ocupado; F = Fechado
 } Caixa;
 
-int GerarSenha();
+void GerarSenhaNormal(Cliente clientes[], int pessoas, int *senhaGerada){
+    *senhaGerada = rand() % 20;
+
+    VerificarSeSenhaJaExiste(&senhaGerada, clientes, pessoas);
+
+    clientes[pessoas].senha = *senhaGerada;
+    clientes[pessoas].tipo = 'N';
+};
+
+void GerarSenhaPrioritaria(Cliente clientes[], int pessoas, int *senhaGerada){
+    *senhaGerada = rand() % 20;
+
+    VerificarSeSenhaJaExiste(&senhaGerada, clientes, pessoas);
+
+    clientes[pessoas].senha = *senhaGerada;
+    clientes[pessoas].tipo = 'P';
+};
+
+void VerificarSeSenhaJaExiste(int *senhaGerada, Cliente clientes[], int pessoas){
+    int i = 0;
+
+    for(i = 0; i < pessoas+1; i++){
+        if(clientes[i].senha == *senhaGerada){
+            *senhaGerada = GerarNumeroSenha(&senhaGerada);
+        }
+    }
+}
+
+int GerarNumeroSenha(int *senhaGerada){
+    return *senhaGerada = rand() % 20;
+}
+
 int ExibirMenu(){
     int opcao = 1;
-    printf("---MENU---\nDigite o a opção que deseja:\n1 - Gerar senha NORMAL\n2 - Gerar senha PRIORITÁRIA\n3 - Liberar caixa fechado ou ocupado\n4 - Fechar caixa\n0 - Sair do programa\n");
+    printf("---MENU---\nDigite o a opï¿½ï¿½o que deseja:\n1 - Gerar senha NORMAL\n2 - Gerar senha PRIORITï¿½RIA\n3 - Liberar caixa fechado ou ocupado\n4 - Fechar caixa\n0 - Sair do programa\n");
     scanf("%i", &opcao);
     return opcao;
 };
@@ -25,11 +56,36 @@ int main()
     setlocale(LC_ALL, "Portuguese");
 
     Caixa caixas[5];
-    Cliente cliente;
-    int opcao;
+    Cliente clientes[40];
+    int opcao = 0, pessoas = 0, *senha;
 
     do{
+
         opcao = ExibirMenu();
+
+        switch(opcao)
+        {
+        case 1:
+            GerarSenhaNormal(clientes, pessoas, &senha);
+            break;
+        case 2:
+            GerarSenhaPrioritaria(clientes, pessoas, &senha);
+            break;
+        case 3:
+        case 4:
+        default:
+            break;
+        }
+
+        int y;
+        for(y = 0; y <= pessoas; y++)
+        {
+            printf("| %i - %c | ", clientes[y].senha, clientes[y].tipo);
+        }
+        printf("\n");
+
+        pessoas++;
+
     }while(opcao != 0);
 
     return 0;
